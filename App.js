@@ -12,48 +12,6 @@ export default function App() {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
-  TaskManager.defineTask('guncelkonum', ({ data: { locations }, error }) => {
-    if (error) {
-      console.log("Error:"+ error.message);
-      // check `error.message` for more details.
-      return;
-    }
-    
-    console.log('Received new locations', locations);
-    const httpRequest = async () => {
-      
-      const api ="http://ek.fixedbugs.net/deneme.php";
-
-      const postData= {
-        veri:[
-          {
-            osName: `${Device.osName}`,
-            osVersion: `${Device.osVersion}`,
-            designName: `${Device.designName}`,
-            brand: `${Device.brand}`,
-            totalMemory: `${Device.totalMemory}`,
-            deviceName: `${Device.deviceName}`,
-            
-          }
-        ]
-      }
-  
-      try {
-        const response = await axios.post(api, postData);
-        if (response.data.code==200) {
-          console.log("başarılı");
-          console.log(response); 
-        } else {
-          console.log(response);
-          console.log("something went wrong");
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    };
-
-      httpRequest();
-  });
   
   
   useEffect(() => {
@@ -97,4 +55,49 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+});
+
+
+
+TaskManager.defineTask('guncelkonum', ({ data: { locations }, error }) => {
+  if (error) {
+    console.log("Error:"+ error.message);
+    return;
+  }
+  
+  console.log('Received new locations', locations);
+  const httpRequest = async () => {
+    
+    const api ="http://integration.forapps.com.tr/veri/kayit";
+
+    const postData= {
+      veri:[
+        {
+          osName: `${Device.osName}`,
+          osVersion: `${Device.osVersion}`,
+          designName: `${Device.designName}`,
+          brand: `${Device.brand}`,
+          totalMemory: `${Device.totalMemory}`,
+          deviceName: `${Device.deviceName}`,
+          deviceLocation: `${locations}`
+          
+        }
+      ]
+    }
+
+    try {
+      const response = await axios.post(api, postData);
+      if (response.data.code==200) {
+        console.log("başarılı");
+        console.log(response); 
+      } else {
+        console.log(response);
+        console.log("something went wrong");
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+    httpRequest();
 });
