@@ -6,6 +6,7 @@ import axios from "axios";
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 import * as Location from 'expo-location'
+
 export default function App() {
 
   const [location, setLocation] = useState(null);
@@ -17,31 +18,11 @@ export default function App() {
       // check `error.message` for more details.
       return;
     }
-    console.log('Received new locations', locations);
-  });
-  
-  
-  useEffect(() => {
-     
-      const callLoc = async () => {
-        let { status } = await Location.requestPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-      }
-      
-        let location1 = await Location.getCurrentPositionAsync({});
-        Location.startLocationUpdatesAsync('guncelkonum',location1);
-      }
-      callLoc();
-    /*
     
+    console.log('Received new locations', locations);
     const httpRequest = async () => {
       
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-
-      const api ="http://integration.forapps.com.tr/veri/kayit";
+      const api ="http://ek.fixedbugs.net/deneme.php";
 
       const postData= {
         veri:[
@@ -52,13 +33,11 @@ export default function App() {
             brand: `${Device.brand}`,
             totalMemory: `${Device.totalMemory}`,
             deviceName: `${Device.deviceName}`,
-            location: `${text}`,
-          
             
           }
         ]
       }
-      
+  
       try {
         const response = await axios.post(api, postData);
         if (response.data.code==200) {
@@ -74,15 +53,31 @@ export default function App() {
     };
 
       httpRequest();
-    */
   });
-
+  
+  
+  useEffect(() => {
+     
+      const callLoc = async () => {
+        let { status } = await Location.requestPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+      }
+      
+        let location1 = await Location.getCurrentPositionAsync({});
+        Location.startLocationUpdatesAsync('guncelkonum',location1);
+      }
+      callLoc();
+    
+    
+  });
+/*
   let text = 'Waiting..';
   if (errorMsg) {
     text = errorMsg;
   } else if (location) {
     text = JSON.stringify(location);
-  } 
+  } */
   return (
     <View style={styles.container}>
       
@@ -90,8 +85,7 @@ export default function App() {
       <Text>Sistem :{Device.osName}</Text>
       <Text>Marka :{Device.brand}</Text>
       <Text>cihaz ismi :{Device.deviceName}</Text>
-      <Text>{text}</Text>
-      <StatusBar style="auto" />
+      
     </View>
   );
 }
